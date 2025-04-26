@@ -2,10 +2,6 @@ const bcrypt  = require("bcryptjs") // for encryption
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.Types.ObjectId;
-require('dotenv').config()
-
-
-mongoose.connect(process.env.MONGO_DB_URL)
 
 
 const userSchema = new Schema({
