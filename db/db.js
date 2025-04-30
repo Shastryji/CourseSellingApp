@@ -32,40 +32,40 @@ const purchasesSchema = new  Schema({
 })
 
 
-// to encrypt the password 
-userSchema.pre('save', async (next)=>{
-    if(!this.isModified('password'))
-    {
-        return next();
-    }
-    try{
-        const salt = await bcrypt.genSalt(10); //saltgen
-        const hashedPassword = await bcrypt.hash(this.password, salt)
-        this.password = hashedPassword
-        nect();
-    }
-    catch(error)
-    {
-        next(error);
-    }
-})
+// to encrypt the password  this is the advance method to encrypt password fileds
+// userSchema.pre('save', async (next)=>{
+//     if(!this.isModified('password'))
+//     {
+//         return next();
+//     }
+//     try{
+//         const salt = await bcrypt.genSalt(10); //saltgen
+//         const hashedPassword = await bcrypt.hash(this.password, salt)
+//         this.password = hashedPassword
+//         nect();
+//     }
+//     catch(error)
+//     {
+//         next(error);
+//     }
+// })
 
-adminSchema.pre('save', async (next)=>{
-    if(!this.isModified('password'))
-    {
-        return next();
-    }
-    try{
-        const salt = await bcrypt.genSalt(10); //saltgen
-        const hashedPassword = await bcrypt.hash(this.password, salt) //hashed
-        this.password = hashedPassword
-        next();
-    }
-    catch(error)
-    {
-        next(error);
-    }
-})
+// adminSchema.pre('save', async (next)=>{
+//     if(!this.isModified('password'))
+//     {
+//         return next();
+//     }
+//     try{
+//         const salt = await bcrypt.genSalt(10); //saltgen
+//         const hashedPassword = await bcrypt.hash(this.password, salt) //hashed
+//         this.password = hashedPassword
+//         next();
+//     }
+//     catch(error)
+//     {
+//         next(error);
+//     }
+// })
 
 const userModel = mongoose.model("user",userSchema);
 const adminModel = mongoose.model("admin", adminSchema);
