@@ -1,19 +1,18 @@
-
+const {v4:uuidv4} = require('uuid')
 const { Router } = require('express')
 const userRouter = Router();
 const zod  = require('zod');
 const { userModel } = require('../db/db.js');
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const env = require('dotenv')
-
+require('dotenv').config()
 
 const signInSchema = zod.object({
     email: zod.string().email().min(5, "email length should be grater than 5"),
     password: zod.string(), //.regex(new RegExp(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/), "must contain 8 characters and 1 letter and 1 number"), ///constain 8 characters 1 letter and 1 number
     firstName: zod.string().min(3, "must have length grater than 3"),
     lastName: zod.string().min(3, "must have length grater than 3"),
-})  
+})   
 
 
 userRouter.post("/signup",async (req,res)=>{
@@ -54,12 +53,23 @@ userRouter.post("/signin",async (req,res)=>{
       const ifPasswordMatch = await bcrypt.compare(password,userLogData.password);
       if(ifPasswordMatch)
       {
-        const token = await jwt.sign(email,process.env.JWT_SECRET); 
-      res.status(200).json({
-        message: "user loggedin successfully",
-        _id: userLogData._id,
-        token:token
-      })
+        const sessionID = uuidv4(); //generating user sessionid
+        
+        const token = jwt.sign({"userId":userLogData, sessionId: sessionID },process.env.JWT_SECRET_USER,{
+          expiresIn: Math.floor(process.env.SESSION_DURATION_USER/1000), //SESSION DURATION IN SECONDS
+        }); 
+        
+        res.cookie('sessionId', token, {
+          httpOnly: true,
+          maxAge: process.env.SESSION_DURATION_USER,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: 'Strict',
+          path: '/'
+        })
+
+        res.status(200).json({
+          message: "user login successfull"
+        })
       }
       else{
         res.status(401).json({
@@ -77,6 +87,7 @@ userRouter.post("/signin",async (req,res)=>{
 })
 
 userRouter.get("/purchases",(req,res)=>{
+
     res.json({
         message:"pourchases endpoint"
     })
