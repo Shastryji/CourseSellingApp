@@ -1,15 +1,24 @@
 const express = require('express');
+const cookieParser = require("cookie-parser");
+const {v2:cloudinary} = require("cloudinary");
 const mongoose = require('mongoose');
-const dotenv = require('dotenv').config()
+require('dotenv').config();
 const { userRouter } = require('./routes/user');
 const { courseRouter } = require('./routes/course');
 const { adminRouter } = require('./routes/admin');
 const app = express()
 app.use(express.json()); //middleware for getting data from req.body
-
+app.use(cookieParser());
 app.use("/user",userRouter);
 app.use("/course", courseRouter);
 app.use("/admin",adminRouter)
+
+//let's authenticate cloudinary
+cloudinary.config({
+	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+	api_key: process.env.CLOUDINARY_API_KEY,
+	api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 
 async function main()
@@ -22,4 +31,4 @@ async function main()
 
 main();
 
-//15:09_2
+//50:48_2

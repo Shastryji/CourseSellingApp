@@ -4,19 +4,14 @@ const userRouter = Router();
 const zod  = require('zod');
 const { userModel } = require('../db/db.js');
 const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-require('dotenv').config()
-
-const signInSchema = zod.object({
-    email: zod.string().email().min(5, "email length should be grater than 5"),
-    password: zod.string(), //.regex(new RegExp(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/), "must contain 8 characters and 1 letter and 1 number"), ///constain 8 characters 1 letter and 1 number
-    firstName: zod.string().min(3, "must have length grater than 3"),
-    lastName: zod.string().min(3, "must have length grater than 3"),
-})   
+const jwt = require('jsonwebtoken');
+const { default: signInSchema } = require('../middleware/schemaZod.js');
+const { userMiddleware } = require('../middleware/userMiddleware.js');
+require('dotenv').config() 
 
 
 userRouter.post("/signup",async (req,res)=>{
-    try
+  try
   {
     signInSchema.parse(req.body); //adding some zod validations
     const {email,password,firstName,lastName } = req.body;
@@ -55,7 +50,7 @@ userRouter.post("/signin",async (req,res)=>{
       {
         const sessionID = uuidv4(); //generating user sessionid
         
-        const token = jwt.sign({"userId":userLogData, sessionId: sessionID },process.env.JWT_SECRET_USER,{
+        const token = jwt.sign({"userId":userLogData._id, sessionId: sessionID },process.env.JWT_SECRET_USER,{
           expiresIn: Math.floor(process.env.SESSION_DURATION_USER/1000), //SESSION DURATION IN SECONDS
         }); 
         
@@ -68,7 +63,8 @@ userRouter.post("/signin",async (req,res)=>{
         })
 
         res.status(200).json({
-          message: "user login successfull"
+          message: "user login successfull",
+          token: token
         })
       }
       else{
@@ -86,7 +82,8 @@ userRouter.post("/signin",async (req,res)=>{
   }
 })
 
-userRouter.get("/purchases",(req,res)=>{
+userRouter.get("/purchases",userMiddleware,(req,res)=>{
+  const userId = req.userId;
 
     res.json({
         message:"pourchases endpoint"
