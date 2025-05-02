@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { default:signInSchema } = require("../middleware/schemaZod.js");
 const { adminMiddleware } = require("../middleware/adminMiddleware.js");
+const { cloudinaryImageUrlGen } = require("../middleware/coudinaryImage.js");
 require('dotenv').config();
 
 adminRouter.post("/signup",async (req,res)=>{
@@ -86,33 +87,10 @@ adminRouter.post("/course",adminMiddleware,async (req,res)=>{
   const adminId = req.adminId;
   const { title, description, price } = req.body;
   let imageUrl = req.body.imageUrl;
-  console.log (adminId);
 
   try {
-    if (imageUrl) {
-      if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-        try {
-          const uploadedResponse = await cloudinary.uploader.upload(imageUrl, {
-            resource_type: "image",
-          });
-          imageUrl = uploadedResponse.secure_url;
-        } catch (cloudinaryErr) {
-          console.error("Cloudinary Upload from URL Error:", cloudinaryErr);
-          return res.status(500).json({ error: "Failed to upload image from URL", details: cloudinaryErr });
-        }
-      } else {
-        try {
-          const uploadedResponse = await cloudinary.uploader.upload(imageUrl);
-          imageUrl = uploadedResponse.secure_url;
-        } catch (cloudinaryErr) {
-            console.error("Cloudinary Upload from base64 Error:", cloudinaryErr);
-            return res.status(500).json({ error: "Failed to upload image (base64)", details: cloudinaryErr });
-        }
-      }
-    } else {
-      imageUrl = ""; 
-    }
 
+    await cloudinaryImageUrlGen(imageUrl);
 
   const courseDetails = await courseModel.create({
     title: title,
@@ -131,10 +109,34 @@ adminRouter.post("/course",adminMiddleware,async (req,res)=>{
 }
 });
 
-adminRouter.put("/course",adminMiddleware, (req,res)=>{
-    res.json({
-        message:"admin put courses"
-    })
+adminRouter.put("/course",adminMiddleware,async (req,res)=>{
+    const adminId = req.adminId;
+    const {title, description, price, courseId } = req.body;
+    let imageUrl = req.body.imageUrl;
+    try{
+        const courseInfo = await courseModel.findOne({_id:courseId});
+        await cloudinary.uploader.destroy(courseInfo.imageUrl.split("/").pop().split(".")[0]);
+        imageurl = await cloudinaryImageUrlGen(imageUrl);
+
+        await courseModel.updateOne({_id: courseId, createrId: adminId},
+          {
+            title: title,
+            description:description,
+            price: price,
+            imageUrl:imageUrl
+          }
+         )
+
+        res.status(201).json({
+          message: "Course Updated successfully",
+          couseId: courseInfo._id
+        })
+
+      }catch(error)
+      {
+        console.error("Error updating course:", error);
+        res.status(500).json({ error: "Internal server error", details: error });
+      }
 })
 
 adminRouter.get("/course/bulk",adminMiddleware, (req,res)=>{

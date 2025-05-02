@@ -12,8 +12,7 @@ function adminMiddleware(req,res,next)
     }
     try{
         const decode = jwt.verify(token,process.env.JWT_SECRET_ADMIN);
-        req.adminId = decode.adminId;
-        console.log(decode)
+        req.adminId = decode.adminId; 
         req.sessionId = decode.sessionId;
         next();
     }catch(error)
