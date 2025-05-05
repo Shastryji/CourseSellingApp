@@ -109,7 +109,7 @@ adminRouter.post("/course",adminMiddleware,async (req,res)=>{
 }
 });
 
-adminRouter.put("/course",adminMiddleware,async (req,res)=>{
+adminRouter.put("/course", adminMiddleware, async (req, res) => {
     const adminId = req.adminId;
     const {title, description, price, courseId } = req.body;
     let imageUrl = req.body.imageUrl;
@@ -139,10 +139,39 @@ adminRouter.put("/course",adminMiddleware,async (req,res)=>{
       }
 })
 
-adminRouter.get("/course/bulk",adminMiddleware, (req,res)=>{
+adminRouter.get("/course/bulk",adminMiddleware,async (req,res)=>{
+  const createrId = await req.adminId;
+  const courses = await courseModel.find({
+    createrId:createrId
+  });
     res.json({
-        message:"get bulk courses"
+        message:"get bulk courses",
+        courses:courses
     })
+})
+
+adminRouter.post("/logout",adminMiddleware,async (req,res)=>{
+  // req.session.destroy((error)=>{
+  //   if(error)
+  //   {
+  //     console.error("Error in destroying the session", error);
+  //     res.status(500).json({ message: "Admin logout failed"});
+  //   }else{
+  //     res.clearCookie('sessionId');
+  //     res.clearCookie('connect.soid');
+  //     res.status(200).json({
+  //       message: "Admin logout successfully"
+  //     });
+  //   }
+  // })
+
+  try {
+		res.cookie("sessionId", " ", { maxAge: 0 });
+		res.status(200).json({ message: "Logged out successfully" });
+	} catch (error) {
+		console.log("Error in logout controller", error.message);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 })
 
 module.exports ={

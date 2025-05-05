@@ -13,6 +13,7 @@ app.use("/user",userRouter);
 app.use("/course", courseRouter);
 app.use("/admin",adminRouter)
 
+
 //let's authenticate cloudinary
 cloudinary.config({
 	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

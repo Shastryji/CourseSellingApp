@@ -2,7 +2,7 @@ const {v4:uuidv4} = require('uuid')
 const { Router } = require('express')
 const userRouter = Router();
 const zod  = require('zod');
-const { userModel } = require('../db/db.js');
+const { userModel, purchaseModel, courseModel } = require('../db/db.js');
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 const { default: signInSchema } = require('../middleware/schemaZod.js');
@@ -82,12 +82,55 @@ userRouter.post("/signin",async (req,res)=>{
   }
 })
 
-userRouter.get("/purchases",userMiddleware,(req,res)=>{
+userRouter.post("/purchases",userMiddleware,async (req,res)=>{
   const userId = req.userId;
+  const courseId = req.body.courseId;
+
+  await purchaseModel.create({
+    userId: userId,
+    courseId: courseId
+  })
+  
+    res.json({
+        message:"cpourse purchased successfully"
+    })
+})
+
+userRouter.get("/purchases",userMiddleware, async(req,res)=>{
+  
+  try
+  {
+    const userId = req.userId;
+    const purchasedCourses = await courseModel.find({userId});
+    res.ststus(2000).json({
+      message: "these are the purchased courses",
+      purchasedCourses
+    })
+  }catch(error)
+  {
+    res.status(500).json({
+      message: "error in purchasing courses"
+    })
+  }
+})
+
+userRouter.get("/preview",async (req,res)=>{
+  const courseDetails = await courseModel.find({});
 
     res.json({
-        message:"pourchases endpoint"
+        message:"see all created courses",
+        courseDetails
     })
+})    
+
+userRouter.get('/logout',userMiddleware, async (req,res)=>{
+  try {
+		res.cookie("sessionId", " ", { maxAge: 0 });
+		res.status(200).json({ message: "Logged out successfully" });
+	} catch (error) {
+		console.log("Error in logout controller", error.message);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
 })
 
 module.exports = {
