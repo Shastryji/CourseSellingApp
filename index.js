@@ -2,11 +2,14 @@ const express = require('express');
 const cookieParser = require("cookie-parser");
 const {v2:cloudinary} = require("cloudinary");
 const mongoose = require('mongoose');
+const cors = require('cors');
 require('dotenv').config();
 const { userRouter } = require('./routes/user');
 const { courseRouter } = require('./routes/course');
 const { adminRouter } = require('./routes/admin');
 const app = express()
+
+app.use(cors({origin: 'http://localhost:5173'}) ) //added the cors for connecting the backend to frontend 
 app.use(express.json()); //middleware for getting data from req.body
 app.use(cookieParser());
 app.use("/user",userRouter);

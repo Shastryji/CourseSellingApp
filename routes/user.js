@@ -102,7 +102,7 @@ userRouter.get("/purchases",userMiddleware, async(req,res)=>{
   {
     const userId = req.userId;
     const purchasedCourses = await courseModel.find({userId});
-    res.ststus(2000).json({
+    res.ststus(200).json({
       message: "these are the purchased courses",
       purchasedCourses
     })
