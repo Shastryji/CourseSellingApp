@@ -1,10 +1,9 @@
 import { useState } from "react";
+import axios from 'axios';
 
 function Signin()
 {
     const [email, setEmail] = useState('');
-    const [lname, setLname] = useState('');
-    const [fname, setFname] = useState('');
     const [password, setPassWord] = useState('');
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
@@ -13,7 +12,7 @@ function Signin()
         event.preventDefault();
         
         //basic validation
-        if(!email|| !password || !fname || !lname)
+        if(!email|| !password)
         {
             setError('All fields are required');
             setMessage('');
@@ -35,18 +34,27 @@ function Signin()
             return;
         }
 
-        console.log('Form submitted successfully: ', {email,password,fname,lname});
-        setMessage('');
+        console.log('Login submitted successfully: ', {email,password});
+        
+        const userData = { email, password };
+        async function userLogin(userData) {
+        try{
+            const responce = await axios.post("http://localhost:3000/user/signin",userData);
+            setMessage(responce.data.message);
+            setEmail('');
+            setPassWord('');
+        }catch(error) {
+            if (error.response) {
+              setError(error.response.data.error || 'Signup failed');
+            } else {
+              setError('Network error. Please try again.');
+            }
+            setMessage('');
+            console.error('Axios error:', error);
+            }
+        }   
 
-        setEmail();
-        setPassWord();
-        setFname();
-        setLname(); 
-
-        const userData = {
-            email:email,
-            
-        }
+        userLogin(userData);
     }
 
 
