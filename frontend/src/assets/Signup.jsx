@@ -51,7 +51,7 @@ function Signup()
                 setfirstName('');   
             }catch (error) {
                 if (error.response) {
-                  setError(error.response.data.error || 'Signup failed');
+                  setError(error.response.data.message || 'Signup failed');
                 } else {
                   setError('Network error. Please try again.');
                 }

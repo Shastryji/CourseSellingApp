@@ -33,8 +33,6 @@ function Signin()
             setMessage('');
             return;
         }
-
-        console.log('Login submitted successfully: ', {email,password});
         
         const userData = { email, password };
         async function userLogin(userData) {
@@ -44,13 +42,13 @@ function Signin()
             setEmail('');
             setPassWord('');
         }catch(error) {
+            console.log(error);
             if (error.response) {
-              setError(error.response.data.error || 'Signup failed');
+              setError(error.response.data.message || 'Signup failed');
             } else {
               setError('Network error. Please try again.');
             }
             setMessage('');
-            console.error('Axios error:', error);
             }
         }   
 
