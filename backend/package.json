@@ -1,0 +1,30 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "- Initialize a new Node.js project\r - Add Express, jsonwebtoken to it as a dependency\r - create index.js\r - Add route skeleton for user login, signup, purchase a course, see course\r - Add route for admin login, admin signup, create a course, delete a course, add course content\r - Add middleware for user and admin auth\r - Add a database (mongodb), use dotenv to store the database connecting string\r - Define the schema for User, Admin, Course, Purchases\r - Complete the route for user login, signup, purchase a course, see course (Extra points - Use express routing better structure your routes)\r - Create the frontend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.6.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.2",
+    "uuid": "^11.1.0",
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
