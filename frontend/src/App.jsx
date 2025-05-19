@@ -1,6 +1,3 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import Signin from './assets/Signin'
 import {Routes, Route} from 'react-router-dom'
@@ -14,6 +11,7 @@ function App() {
 <div>
     <Routes>
       <Route path={"/addcourse"} element={<Add-Course/>}></Route>
+      <Route path={"/purchased-courses"} element={<Purchased-Courses/>}></Route>
       <Route path={"/signin"} element={<Signin />}></Route>
       <Route path={"/Signup"} element={<Signup />}></Route>
     </Routes> 
