@@ -92,7 +92,7 @@ userRouter.post("/purchases",userMiddleware,async (req,res)=>{
   })
   
     res.json({
-        message:"cpourse purchased successfully"
+        message:"course purchased successfully"
     })
 })
 
