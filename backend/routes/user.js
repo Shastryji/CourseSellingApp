@@ -133,6 +133,34 @@ userRouter.get('/logout',userMiddleware, async (req,res)=>{
 	}
 })
 
+//adding the user auth route for the component based auth frontend
+// userRouter.get('/verify-auth', async (req,res)=>{
+//   try{
+//     const token = req.token;
+//     console.log(token);
+//     if(!token)
+//     {
+//       return res.status(401).json({
+//         message: "not authenticated"
+//       })
+//     }
+//     jwt.verify(token, process.env.JWT_SECRET_USER, (err, decode)=>{
+//       if(error)
+//       {
+//         return res.status(401).json({
+//           message: "Invalid token"
+//         })
+//       }
+//       res.status(200).json({message: "Authenticated"})
+//     });
+//   }catch(error)
+//   {
+//     res.status(500).json({
+//       message: "Server Error"
+//     })
+//   }
+// })
+
 module.exports = {
     userRouter :userRouter
 } 

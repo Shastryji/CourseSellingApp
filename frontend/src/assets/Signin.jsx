@@ -8,7 +8,7 @@ function Signin() {
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    // const navigate = useNavigate(); // Uncomment if using React Router
+    const navigate = useNavigate(); // Uncomment if using React Router
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -37,7 +37,7 @@ function Signin() {
         }
         
         try {
-            const response = await axios.post("http://localhost:3000/user/signin", { email, password });
+            const response = await axios.post("http://localhost:3000/user/signin", { email, password }, { withCredentials: true });
             setMessage(response.data.message);
             setEmail('');
             setPassWord('');
@@ -49,7 +49,7 @@ function Signin() {
             }
             
             // Redirect on successful login (uncomment if using React Router)
-            // navigate('/dashboard'); 
+            navigate('/dashboard'); 
             
         } catch(error) {
             console.error('Login error:', error);
