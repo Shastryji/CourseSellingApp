@@ -76,7 +76,7 @@ userRouter.post("/signin",async (req,res)=>{
   {
     console.log(error);
     res.status(500).json({
-      message:"Internal Server Error",
+      message:"User Not found Please check email/password",
       error:error
     })
   }

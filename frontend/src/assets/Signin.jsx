@@ -45,6 +45,7 @@ function Signin() {
             // Store token if your backend returns one
             if (response.data.token) {
                 localStorage.setItem('token', response.data.token);
+                console.log(response.data);
             }
             
             // Redirect on successful login (uncomment if using React Router)

@@ -9,7 +9,11 @@ const { courseRouter } = require('./routes/course');
 const { adminRouter } = require('./routes/admin');
 const app = express()
 
-app.use(cors({origin: 'http://localhost:5173'}) ) //added the cors for connecting the backend to frontend 
+//added the cors for connecting the backend to frontend 
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json()); //middleware for getting data from req.body
 app.use(cookieParser());
 app.use("/user",userRouter);
