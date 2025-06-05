@@ -11,8 +11,8 @@ function Signup() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        
-        // Basic validation
+
+    
         if(!email || !password || !firstName || !lastName) {
             setError('All fields are required');
             setMessage('');
